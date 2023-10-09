@@ -3,7 +3,7 @@
 Garcia Sebastião
 
 ## Tecnologias Usadas
-### Fronted
+### Frontend
 ReactJs
 TailwindCSS
 
