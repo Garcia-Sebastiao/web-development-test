@@ -1,5 +1,18 @@
 # RESPOSTA AO TESTE DE DESENVOLVIMENTO WEB MIRANTES
-##Candidato: Garcia Sebastião
+## Candidato
+Garcia Sebastião
+
+## Tecnologias Usadas
+### Fronted
+ReactJs
+TailwindCSS
+
+### Backend
+NodeJs
+NestJS
+
+### BD
+MongoDB
 
 ## Experiencia
 Foi uma experiência muito boa passar pelo teste da mirantes, sendo este um projecto muito interessante, que permitiu explorar um pouco mais sobre Desenvoolvimento Web
