@@ -1,0 +1,76 @@
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Book } from './schemas/book.schema';
+import * as mongoose from 'mongoose';
+import { Query } from 'express-serve-static-core';
+import { User } from '../auth/schema/user.schema';
+
+@Injectable()
+export class BookService {
+  constructor(
+    @InjectModel(Book.name)
+    private bookModel: mongoose.Model<Book>,
+  ) {}
+
+  async findAll() {
+    const books = await this.bookModel.find();
+    return books;
+  }
+
+  async searchBook(query: Query): Promise<Book[]> {
+    const keyword = query.keyword
+      ? {
+          title: {
+            $regex: query.keyword,
+            $options: 'i',
+          },
+        }
+      : {};
+
+    const books = await this.bookModel.find({ ...keyword });
+    return books;
+  }
+
+  async create(book: Book, user: User): Promise<Book> {
+    const data = Object.assign(book, {
+      user: user._id,
+    });
+
+    const res = await this.bookModel.create(data);
+    return res;
+  }
+
+  async findById(id: string): Promise<Book> {
+    const isValidId = mongoose.isValidObjectId(id);
+
+    if (!isValidId) {
+      throw new BadRequestException('Please enter correct id.');
+    }
+
+    const book = await this.bookModel.findById(id);
+
+    if (!book) {
+      throw new NotFoundException('Book not found.');
+    }
+    return book;
+  }
+
+  async findByUserId(id: string): Promise<Book[]> {
+    return this.bookModel.find({ user: id }).exec();
+  }
+
+  async updateById(id: string, book: Book): Promise<Book> {
+    return await this.bookModel.findByIdAndUpdate(id, book, {
+      new: true,
+      runValidators: true,
+    });
+  }
+
+  async deleteBook(id: string): Promise<Book> {
+    return await this.bookModel.findByIdAndDelete(id);
+  }
+}
